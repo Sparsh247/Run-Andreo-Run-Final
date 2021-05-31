@@ -68,7 +68,10 @@ if(gameState===PLAY){
     score=score+100
   }
  
- 
+  
+
+
+
  
   spawnCars();
   blackcars();
@@ -97,7 +100,7 @@ boy.collide(wall2)
   drawSprites();
 }
 function  spawnCars(){
-if(frameCount%230===0){
+if(frameCount%200===0){
   var car1=createSprite(1200,550,10,10)
  car1.addAnimation("running",carimg)
  car1.y=Math.round(random(550,650))
@@ -114,7 +117,7 @@ if(frameCount%230===0){
 }
 }
 function blackcars(){
-  if(frameCount%380===0){
+  if(frameCount%300===0){
     var car2=createSprite(1200,550,20,20)
     car2.addAnimation("running",greyCarimg)
     car2.y=Math.round(random(550,650))
@@ -130,7 +133,7 @@ function blackcars(){
 }
 
 function spawnCoins(){
- if(frameCount%100===0){
+ if(frameCount%170===0){
    var coin=createSprite(1200,550,10,10)
    coin.addAnimation("moving",coinimg)
    coin.y=Math.round(random(550,650))
@@ -143,4 +146,3 @@ coinGrp.add(coin)
 
   
 }
-
