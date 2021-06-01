@@ -12,7 +12,8 @@ function preload(){
 carimg=loadAnimation("Images/Car1.gif","Images/Car2.gif","Images/Car3.gif","Images/Car4.gif","Images/Car5.gif")
 greyCarimg=loadAnimation("Images/Grey1.gif","Images/Grey2.gif","Images/Grey3.gif","Images/Grey4.gif")
 coinimg=loadAnimation("Coins/Coin 1.gif","Coins/Coin 2.gif","Coins/Coin 3.gif","Coins/Coin 4.gif","Coins/Coin 5.gif","Coins/Coin 6.gif","Coins/Coin 7.gif","Coins/Coin 8.gif","Coins/Coin 9.gif","Coins/Coin 10.gif","Coins/Coin 11.gif","Coins/Coin 12.gif")
-
+gameimg=loadImage("Game.png")
+resetimg=loadImage("Restart.png")
 
 
 }
@@ -20,6 +21,11 @@ coinimg=loadAnimation("Coins/Coin 1.gif","Coins/Coin 2.gif","Coins/Coin 3.gif","
 
 function setup() {
   createCanvas(displayWidth,displayHeight);
+
+  bg=createSprite(displayWidth/2,displayHeight/2)
+bg.addImage(bgimg)
+bg.scale=0.7
+//bg.velocityX=-6
 
   boy=createSprite(400, 600, 50, 50);
   boy.addAnimation("running",boyimg)
@@ -36,11 +42,13 @@ function setup() {
 wall2=createSprite(20,720,2600,10)
    wall2.visible=false
 
+  gameover=createSprite(displayWidth/2,350)
+  gameover.addImage(gameimg)
+  gameover.scale=1.5
+  reset=createSprite(displayWidth/2,550)
+  reset.addImage(resetimg)
+  reset.scale=0.4
 
-//bg=createSprite(displayWidth/2,displayHeight/2)
-
-
-  //bg.addImage(bgimg)
 car1Grp=new Group()
 car2Grp=new Group()
 coinGrp=new Group()
@@ -49,11 +57,12 @@ score=0;
 
 
 function draw() {
-  background(bgimg);
+  background(0);
   fill("black")
 textSize(35)
-text("Score:"+score,900,50)
 if(gameState===PLAY){
+  gameover.visible=false
+  reset.visible=false
   //score=score+Math.round(frameRate()/60)
   if(keyDown("UP_ARROW")){
     boy.y=boy.y-10;
@@ -68,7 +77,9 @@ if(gameState===PLAY){
     score=score+100
   }
  
-  
+  /*if(bg.x<0){
+    bg.x=displayWidth
+  }*/
 
 
 
@@ -80,11 +91,21 @@ if(gameState===PLAY){
 
   if(boy.isTouching(car1Grp)||boy.isTouching(car2Grp)){
     gameState=END
+     
   }
 }
 else{
    if(gameState===END){
+    gameover.visible=true
+    reset.visible=true
      boy.velocityY=0;
+     car1Grp.setLifetimeEach(-1)
+     car1Grp.setVelocityXEach(0)
+     car2Grp.setLifetimeEach(-1)
+     car2Grp.setVelocityXEach(0)
+     coinGrp.setVelocityXEach(0)
+     coinGrp.setLifetimeEach(-1)
+
      
    }
 }
@@ -94,19 +115,35 @@ boy.collide(wall2)
 
 
 
-
+ if(mousePressedOver(reset)){
+   restart()
+ }
 
 
   drawSprites();
+  
+text("Score:"+score,900,50)
 }
+function restart(){
+  gameover.visible=false
+  reset.visible=false
+  gameState=PLAY
+  car1Grp.destroyEach()
+  car2Grp.destroyEach()
+  coinGrp.destroyEach()
+  score=0
+}
+
+
 function  spawnCars(){
 if(frameCount%200===0){
   var car1=createSprite(1200,550,10,10)
  car1.addAnimation("running",carimg)
- car1.y=Math.round(random(550,650))
+ car1.y=Math.round(random(550,600))
  car1.velocityX=-4
   car1.scale=0.8
 
+  car1.lifetime=2000
   car1.depth=boy.depth
   boy.depth=boy.depth+1
  car1Grp.add(car1)
@@ -117,17 +154,17 @@ if(frameCount%200===0){
 }
 }
 function blackcars(){
-  if(frameCount%300===0){
-    var car2=createSprite(1200,550,20,20)
+  if(frameCount%380===0){
+    var car2=createSprite(1200,600,20,20)
     car2.addAnimation("running",greyCarimg)
-    car2.y=Math.round(random(550,650))
+    car2.y=Math.round(random(600,650))
     car2.velocityX=-4
      car2.scale=1.8
      car2.debug=true
      car2.depth=boy.depth
      boy.depth=boy.depth+1
   car2Grp.add(car2)
-
+    
     }
  
 }
